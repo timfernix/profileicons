@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoL Profile Icons</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div class="container header-content">
+            <h1>League of Legends <span class="accent">Profile Icons</span></h1>
+            <p></p>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search by ID or Title...">
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading summoner data...</p>
+        </div>
+        <div id="icon-grid" class="icon-grid">
+        </div>
+        <div id="sentinel"></div>
+    </main>
+
+    <div id="modal" class="modal" aria-hidden="true">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <button class="close-btn" aria-label="Close">&times;</button>
+            <div class="modal-body">
+                <div class="modal-image-wrapper">
+                    <img id="modal-img" src="" alt="Icon Detail">
+                    <div class="modal-legacy-badge" id="modal-legacy">Legacy</div>
+                </div>
+                <div class="modal-info">
+                    <h2 id="modal-title">Icon Title</h2>
+                    <div class="modal-meta">
+                        <span id="modal-year">Released: 20XX</span>
+                        <span id="modal-id">ID: 0</span>
+                    </div>
+                    <div class="modal-divider"></div>
+                    <div class="modal-description-box">
+                        <h3>Description</h3>
+                        <p id="modal-desc">No description available.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
