@@ -2,32 +2,134 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LoL Profile Icons</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>LoL Profile Icon Explorer</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <header>
-        <div class="container header-content">
-            <h1>League of Legends <span class="accent">Profile Icons</span></h1>
-            <p></p>
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Search by ID or Title...">
+    <header class="hero">
+        <div class="container hero-grid">
+            <div class="hero-copy">
+                <span class="eyebrow">Icon Library</span>
+                <h1>League of Legends Profile Icons</h1>
+                <p>Explore, filter, preview or share any icon.</p>
             </div>
+        </div>
+
+        <div class="container filter-panel">
+            <div class="search-bar">
+                <input type="search" id="searchInput" placeholder="Search icons by name, ID, or description…" autocomplete="off">
+            </div>
+
+            <details class="filter-fold">
+                <summary>Show advanced filter options</summary>
+                <div class="filter-grid">
+                    <div class="filter-column-left">
+                        <fieldset class="filter-group">
+                            <legend>Release year</legend>
+                            <div class="range-row">
+                                <label>
+                                    <span>From</span>
+                                    <input type="number" id="yearMin" min="2009" value="2009">
+                                </label>
+                                <label>
+                                    <span>To</span>
+                                    <input type="number" id="yearMax" min="2009" value="2026">
+                                </label>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="filter-group">
+                            <legend>Rarity</legend>
+                            <div id="rarityFilters" class="filter-pill-group"></div>
+                        </fieldset>
+
+                        <div class="toggle-row">
+                            <label class="toggle-control">
+                                <input type="checkbox" id="legacyToggle">
+                                <span class="toggle-slider"></span>
+                                <span>Legacy only</span>
+                            </label>
+                            <label class="toggle-control">
+                                <input type="checkbox" id="favoritesOnlyToggle">
+                                <span class="toggle-slider"></span>
+                                <span>Saved only</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="filter-column-right">
+                        <fieldset class="filter-group">
+                            <legend>Associated event</legend>
+                            <div id="alphabetFilter" class="alphabet-buttons"></div>
+                            <div id="eventFilters" class="filter-pill-group"></div>
+                        </fieldset>
+
+                        <fieldset class="filter-group sort-group">
+                            <legend>Sort by</legend>
+                            <select id="sortSelect">
+                                <option value="newest">Newest first</option>
+                                <option value="oldest">Oldest first</option>
+                                <option value="alpha">A → Z</option>
+                                <option value="rarity">Rarity</option>
+                            </select>
+                        </fieldset>
+                    </div>
+                </div>
+
+                <div class="filter-actions">
+                    <div class="action-row">
+                        <button id="clearFilters" class="button button-secondary">Reset filters</button>
+                        <button id="favoritesToggle" class="button button-primary">Saved icons</button>
+                    </div>
+                </div>
+            </details>
         </div>
     </header>
 
     <main class="container">
+        <section class="stats-strip">
+            <div class="stat-block">
+                <span id="totalCount">0</span>
+                <small>Total icons</small>
+            </div>
+            <div class="stat-block">
+                <span id="filteredCount">0</span>
+                <small>Visible results</small>
+            </div>
+            <div class="stat-block">
+                <span id="legacyCount">0</span>
+                <small>Legacy icons</small>
+            </div>
+            <div class="stat-block">
+                <span id="favoritesCount">0</span>
+                <small>Saved favorites</small>
+            </div>
+        </section>
+
+        <section id="favoritesSection" class="favorites-panel hidden">
+            <div class="section-heading">
+                <div>
+                    <h2>Your saved icons</h2>
+                    <p>Quick access to icons you want to collect or share.</p>
+                </div>
+                <button id="closeFavorites" class="button button-secondary">Hide</button>
+            </div>
+            <div id="favoritesGrid" class="favorites-grid"></div>
+            <p class="panel-note">Favorites are stored locally in your browser and stay available whenever you return.</p>
+        </section>
+
         <div id="loading" class="loading">
             <div class="spinner"></div>
-            <p>Loading summoner data...</p>
+            <p>Loading summoner icons…</p>
         </div>
-        <div id="icon-grid" class="icon-grid">
-        </div>
+
+        <p id="noResults" class="no-results hidden">No icons match that search. Try a broader keyword or reset the filters.</p>
+        <div id="icon-grid" class="icon-grid"></div>
         <div id="sentinel"></div>
     </main>
 
@@ -37,7 +139,7 @@
             <button class="close-btn" aria-label="Close">&times;</button>
             <div class="modal-body">
                 <div class="modal-image-wrapper">
-                    <img id="modal-img" src="" alt="Icon Detail">
+                    <img id="modal-img" src="" alt="Icon detail">
                     <div class="modal-legacy-badge" id="modal-legacy">Legacy</div>
                 </div>
                 <div class="modal-info">
@@ -50,6 +152,10 @@
                     <div class="modal-description-box">
                         <h3>Description</h3>
                         <p id="modal-desc">No description available.</p>
+                    </div>
+                    <div class="modal-actions">
+                        <button id="favoriteButton" class="button button-primary">Save to favorites</button>
+                        <button id="copyLinkButton" class="button button-secondary">Copy link</button>
                     </div>
                 </div>
             </div>
